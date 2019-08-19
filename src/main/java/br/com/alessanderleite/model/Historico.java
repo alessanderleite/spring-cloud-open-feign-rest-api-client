@@ -3,14 +3,17 @@ package br.com.alessanderleite.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,6 +27,8 @@ public class Historico {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "historico")
 	private Set<Cliente> clientes = new HashSet<Cliente>(0);
 
+	@OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+	@JoinColumns({@JoinColumn(name = "id_localide", referencedColumnName = "id", nullable = false)})
 	private Localidade localidade;
 	
 	private String min_temp;
