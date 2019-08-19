@@ -1,4 +1,4 @@
-package br.com.alessanderleite.service;
+package br.com.alessanderleite.repository;
 
 import java.util.Optional;
 
