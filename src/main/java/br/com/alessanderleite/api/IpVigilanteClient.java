@@ -2,7 +2,6 @@ package br.com.alessanderleite.api;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import org.springframework.context.support.StaticApplicationContext; 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
