@@ -1,5 +1,7 @@
 package br.com.alessanderleite.service;
 
-public interface HistoricoService extends CRUDService<HistoricoService, Integer>{
+import br.com.alessanderleite.model.Historico;
+
+public interface HistoricoService extends CRUDService<Historico, Integer>{
 
 }
