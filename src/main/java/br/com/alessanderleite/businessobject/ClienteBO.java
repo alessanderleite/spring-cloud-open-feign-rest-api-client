@@ -6,11 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintDefinitionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import br.com.alessanderleite.api.IpVigilanteClient;
 import br.com.alessanderleite.api.MetaweatherClient;
@@ -26,6 +28,7 @@ import br.com.alessanderleite.valueobject.GeolocalizacaoVO;
 import br.com.alessanderleite.valueobject.HistoricoVO;
 import br.com.alessanderleite.valueobject.RetornoVO;
 
+@Component
 public class ClienteBO {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ClienteBO.class); 
@@ -39,6 +42,7 @@ public class ClienteBO {
 	@Autowired
 	private MetaweatherClient metaweather;
 	
+	@Transactional
 	public RetornoVO salvar(Cliente cliente) {
 		
 		if (!Optional.ofNullable(cliente.getId()).isPresent()) {
