@@ -77,4 +77,10 @@ public class Geolocalizacao implements Comparable<Geolocalizacao>{
 			return 1;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "Geolocalizacao [id=" + id + "\n distance=" + distance + "\n title=" + title + "\n location_type="
+				+ location_type + "\n woeid=" + woeid + "\n latt_long=" + latt_long + "]";
+	}
 }
