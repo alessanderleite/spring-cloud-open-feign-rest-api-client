@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.alessanderleite.api.IpVigilanteClient;
 import br.com.alessanderleite.api.MetaweatherClient;
+import br.com.alessanderleite.exception.NotFoundException;
 import br.com.alessanderleite.model.Cliente;
 import br.com.alessanderleite.model.Clima;
 import br.com.alessanderleite.model.Geolocalizacao;
@@ -46,12 +47,15 @@ public class ClienteBO {
 			Historico historico = new Historico();
 			
 			Localidade localidade = ipVigilante.getLocalidade();
+			logger.info("ipVigilante.getLocalidade():" + localidade);
 			
 			List<Geolocalizacao> listaGeolocalizacao = metaweather.obterLocalizacao(String.format("%s,%s", localidade.getData().getLatitude(), localidade.getData().getLocalidades()));
+			logger.info("metaweather.obterLocalizacao(): " + listaGeolocalizacao);
 			
 			String pattern = "yyyy/MM/dd";
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 			String data = simpleDateFormat.format(new Date());
+			logger.info("simpleDateFormat.format(new Date()): " + data);
 			
 			List<Clima> listaClimas = new ArrayList<Clima>();
 			
@@ -79,6 +83,17 @@ public class ClienteBO {
 			return buildRetornoVO(clienteSave);
 		} else {
 			throw new ConstraintDefinitionException();	
+		}
+	}
+	
+	public List<RetornoVO> listaClientes() {
+		try {
+			Iterable<Cliente> clientes = clienteService.listAll();
+			List<RetornoVO> lista = new ArrayList<RetornoVO>();
+			clientes.forEach(cliente -> lista.add(buildRetornoVO(cliente)));
+			return lista;
+		} catch (Exception e) {
+			throw new NotFoundException("Não Encontrado!");
 		}
 	}
 	
