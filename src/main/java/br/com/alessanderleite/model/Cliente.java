@@ -37,6 +37,11 @@ public class Cliente {
 		this.nome = nome;
 		this.idade = idade;
 	}
+	
+	public Cliente(String nome, int idade) {
+		this.nome = nome;
+		this.idade = idade;
+	}
 
 	public Integer getId() {
 		return id;
