@@ -9,8 +9,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintDefinitionException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +17,7 @@ import br.com.alessanderleite.api.MetaweatherClient;
 import br.com.alessanderleite.exception.NotFoundException;
 import br.com.alessanderleite.model.Cliente;
 import br.com.alessanderleite.model.Clima;
+import br.com.alessanderleite.model.Data;
 import br.com.alessanderleite.model.Geolocalizacao;
 import br.com.alessanderleite.model.Historico;
 import br.com.alessanderleite.model.Localidade;
@@ -30,9 +29,7 @@ import br.com.alessanderleite.valueobject.RetornoVO;
 
 @Component
 public class ClienteBO {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ClienteBO.class); 
-	
+		
 	@Autowired
 	private ClienteService clienteService;
 	
@@ -51,15 +48,12 @@ public class ClienteBO {
 			Historico historico = new Historico();
 			
 			Localidade localidade = ipVigilante.getLocalidade();
-			logger.info("ipVigilante.getLocalidade():" + localidade);
-			
-			List<Geolocalizacao> listaGeolocalizacao = metaweather.obterLocalizacao(String.format("%s,%s", localidade.getData().getLatitude(), localidade.getData().getLocalidades()));
-			logger.info("metaweather.obterLocalizacao(): " + listaGeolocalizacao);
+						
+			List<Geolocalizacao> listaGeolocalizacao = metaweather.obterLocalizacao(String.format("%s,%s", localidade.getData().getLatitude(), localidade.getData().getLongitude()));
 			
 			String pattern = "yyyy/MM/dd";
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-			String data = simpleDateFormat.format(new Date());
-			logger.info("simpleDateFormat.format(new Date()): " + data);
+			String data = simpleDateFormat.format(new Date()); // return current date
 			
 			List<Clima> listaClimas = new ArrayList<Clima>();
 			
@@ -97,7 +91,65 @@ public class ClienteBO {
 			clientes.forEach(cliente -> lista.add(buildRetornoVO(cliente)));
 			return lista;
 		} catch (Exception e) {
-			throw new NotFoundException("Não Encontrado!");
+			throw new NotFoundException("Not Found");
+		}
+	}
+	
+	public RetornoVO buscarClienteId(Integer id) {
+		try {
+			Cliente cliente = clienteService.getById(id);
+			return buildRetornoVO(cliente);
+		} catch (Exception e) {
+			throw new NotFoundException("Not Found");
+		}
+	}
+	
+	public void deletar(Integer id) {
+		try {
+			clienteService.delete(id);
+		} catch (Exception e) {
+			throw new NotFoundException("Not Found");
+		}
+	}
+	
+	public RetornoVO atualizar(RetornoVO clienteVO) {
+		Cliente cliente = clienteService.getById(clienteVO.getCliente().getId());
+		if (Optional.ofNullable(cliente).isPresent()) {
+			
+			Cliente clienteAtualizado = new Cliente(
+					clienteVO.getCliente().getId(),
+					clienteVO.getCliente().getNome(),
+					clienteVO.getCliente().getIdade()
+			);
+			
+			Historico historico = new Historico(
+					clienteVO.getHistorico().getId(),
+					clienteVO.getHistorico().getMin_temp(),
+					clienteVO.getHistorico().getMax_temp()
+			);
+			
+			Localidade localidade = new Localidade(
+					cliente.getHistorico().getLocalidade().getId(),
+					cliente.getHistorico().getLocalidade().getData()
+			);
+			
+			localidade.setData(new Data(
+					clienteVO.getHistorico().getLocalidade().getIpv4(),
+					clienteVO.getHistorico().getLocalidade().getContinete(),
+					clienteVO.getHistorico().getLocalidade().getPais(),
+					clienteVO.getHistorico().getLocalidade().getCidade(),
+					clienteVO.getHistorico().getLocalidade().getLatitude(),
+					clienteVO.getHistorico().getLocalidade().getLongitude()
+			));
+			
+			historico.getClientes().add(clienteAtualizado);
+			historico.setLocalidade(localidade);
+			localidade.getHistoricos().add(historico);
+			clienteAtualizado.setHistorico(historico);
+			cliente = clienteService.save(clienteAtualizado);
+			return buildRetornoVO(clienteAtualizado);
+		} else {
+			throw new NotFoundException("Not Found");
 		}
 	}
 	
