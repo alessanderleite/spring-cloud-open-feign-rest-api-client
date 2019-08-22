@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class Data {
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	private String ipv4;

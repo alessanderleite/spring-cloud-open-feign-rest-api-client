@@ -15,7 +15,7 @@ public class Clima {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonIgnore
 	private Integer id;
 	

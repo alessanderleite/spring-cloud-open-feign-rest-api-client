@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class Historico {
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "historico")

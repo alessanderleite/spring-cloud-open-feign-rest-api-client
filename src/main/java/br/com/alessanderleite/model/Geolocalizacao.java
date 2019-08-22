@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class Geolocalizacao implements Comparable<Geolocalizacao>{
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;	
 	
 	private String distance;
