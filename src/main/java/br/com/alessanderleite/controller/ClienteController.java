@@ -19,17 +19,17 @@ import br.com.alessanderleite.model.Cliente;
 import br.com.alessanderleite.valueobject.RetornoVO;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/api/v1")
 public class ClienteController {
 
 	@Autowired
 	private ClienteBO clienteBO;
 	
-	@PostMapping
+	@PostMapping()
 	public ResponseEntity<?> salvar(@RequestBody Cliente cliente) throws URISyntaxException {
 		RetornoVO clienteSave = clienteBO.salvar(cliente);
 		return ResponseEntity
-				.created(new URI("localhost:8080/clientes/"+clienteSave.getCliente().getId()))
+				.created(new URI("localhost:8080/api/v1/"+clienteSave.getCliente().getId()))
 				.body(clienteSave);
 	}
 	
@@ -43,7 +43,7 @@ public class ClienteController {
 		return ResponseEntity.ok().body(clienteBO.buscarClienteId(id));
 	}
 	
-	@GetMapping
+	@GetMapping()
 	public ResponseEntity<?> listaClientes() {
 		return ResponseEntity.ok().body(clienteBO.listaClientes());
 	}
